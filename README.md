@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# Todo App — React + Redux Toolkit
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-featured Todo application built as a React learning project, progressively upgraded from plain React state management to **Redux Toolkit** for global state.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Add / Edit / Delete** todos with name, email, phone number, and date fields
+- **Toggle status** — mark todos as pending or completed by clicking
+- **Search** todos by title in real time
+- **Filter** by status: All / Completed / Pending
+- **Pagination** with configurable items per page (5 / 10 / 15)
+- **Dark mode** toggle
+- **LocalStorage persistence** — todos survive page refreshes
+- **Loading spinner** while hydrating state from storage
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| Layer | Technology |
+|---|---|
+| UI | React 19 |
+| State | Redux Toolkit + React Redux |
+| Routing | React Router DOM v7 |
+| Styling | SCSS (Sass) |
+| Icons | React Icons |
+| Spinner | React Spinners |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+```bash
+# Clone the repo
+git clone https://github.com/<your-username>/react-todo-redux.git
+cd react-todo-redux
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Install dependencies
+npm install
 
-### `npm run build`
+# Start dev server
+npm start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+App runs at `http://localhost:3000`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Project Structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+├── Features/
+│   └── todoSlice.js      # Redux slice — actions & reducers
+├── Pages/
+│   ├── todomain.jsx      # Main list page (search, filter, pagination)
+│   └── TodoListItems.jsx # Add / Edit form page
+├── store/
+│   └── store.js          # Redux store configuration
+├── App.js                # Routes setup
+└── App.scss              # Global styles
+```
 
-### `npm run eject`
+## How It Evolved
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This project was built in two stages as a learning exercise:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. **Stage 1 — Plain React** — state managed with `useState` and `localStorage` read/write directly in components (preserved in comments)
+2. **Stage 2 — Redux Toolkit** — migrated to a centralized store with `createSlice`, `useSelector`, and `useDispatch`. `selectedId` for edit routing moved from `localStorage` into Redux state.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Scripts
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm start      # Development server
+npm run build  # Production build
+npm test       # Run tests
+```
 
-## Learn More
+## License
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT
