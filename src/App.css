@@ -140,6 +140,17 @@ input{
     text-wrap: nowrap;
     cursor: pointer;
 }
+.auth-error{
+    color: #dc2626;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .pagination-wrapper{
      display: flex;
     align-items: center;
