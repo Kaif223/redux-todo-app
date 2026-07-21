@@ -17,10 +17,10 @@ const SignUp = () => {
         return state.userDetail.error;
     })
 
-    const handleSubmit = async(values) => {
+    const handleSubmit = async (values) => {
         try {
-          const hamm =  await dispatch(signupUser(values)).unwrap()
-            navigate("/")
+            const hamm = await dispatch(signupUser(values)).unwrap()
+            navigate("/signin")
         } catch (error) {
             console.log("🚀 ~ handleSubmit ~ error:", error)
         }
@@ -63,7 +63,7 @@ const SignUp = () => {
                                 placeholder="Enter your first name"
                             />
                             {formik.touched.firstName && formik.errors.firstName && (
-                                <p>{formik.errors.firstName}</p>
+                                <p className="error-message">{formik.errors.firstName}</p>
                             )}
                         </div>
 
@@ -78,7 +78,7 @@ const SignUp = () => {
                                 placeholder="Enter your last name"
                             />
                             {formik.touched.lastName && formik.errors.lastName && (
-                                <p>{formik.errors.lastName}</p>
+                                <p className="error-message">{formik.errors.lastName}</p>
                             )}
                         </div>
                     </div>
@@ -93,7 +93,7 @@ const SignUp = () => {
                         placeholder="Choose a username"
                     />
                     {formik.touched.userName && formik.errors.userName && (
-                        <p>{formik.errors.userName}</p>
+                        <p className="error-message">{formik.errors.userName}</p>
                     )}
                     <label htmlFor="signupEmail">Email Address</label>
                     <input
@@ -105,7 +105,7 @@ const SignUp = () => {
                         placeholder="Enter your email"
                     />
                     {formik.touched.userMail && formik.errors.userMail && (
-                        <p>{formik.errors.userMail}</p>
+                        <p className="error-message">{formik.errors.userMail}</p>
                     )}
                     <label htmlFor="signupPassword">Password</label>
                     <input
@@ -117,7 +117,7 @@ const SignUp = () => {
                         placeholder="Create a password"
                     />
                     {formik.touched.password && formik.errors.password && (
-                        <p>{formik.errors.password}</p>
+                        <p className="error-message">{formik.errors.password}</p>
                     )}
 
                     <label htmlFor="confirmPassword">Confirm Password</label>
@@ -130,14 +130,14 @@ const SignUp = () => {
                         placeholder="Re-enter your password"
                     />
                     {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-                        <p>{formik.errors.confirmPassword}</p>
+                        <p className="error-message">{formik.errors.confirmPassword}</p>
                     )}
                     <button type="submit" className="cutom-btn blue auth-submit-btn">
                         Sign Up
                     </button>
                 </form>
                 {error &&
-                <p className="auth-error">Something went wrong. Please check your details and try again.</p>
+                    <p className="auth-error">Something went wrong. Please check your details and try again.</p>
                 }
 
                 <div className="auth-divider">
