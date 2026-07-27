@@ -8,8 +8,9 @@ export const signupUser = createAsyncThunk(
     async (values, { rejectWithValue }) => {
         try {
             const response = await axios.post('http://localhost:8000/api/signup', values);
+            return response.data
 
-            console.log('Success:', response.data);
+            // console.log('Success:', response.data);
             // if(!response.ok){
             //      throw new Error("somwthings went wrong ")
             // }
@@ -24,7 +25,30 @@ export const signinUser = createAsyncThunk(
     "users/signinUser",
     async (values, { rejectWithValue }) => {
         try {
-            const response = await axios.post('http://localhost:8000/api/signin', values);
+            const response = await axios.post('http://localhost:8000/api/signin', values, {
+                withCredentials: true
+            });
+            return response.data
+
+            // console.log('Success:', response.data);
+            // if(!response.ok){
+            //      throw new Error("somwthings went wrong ")
+            // }
+
+        } catch (error) {
+            console.error('Error sending data:', error.message);
+            return rejectWithValue(error.message)
+        }
+    })
+
+export const signOutUser = createAsyncThunk(
+    "users/signOutUser",
+    async (values, { rejectWithValue }) => {
+        try {
+            const response = await axios.post('http://localhost:8000/api/logout', values, {
+                withCredentials: true
+            });
+            return response.data
 
             console.log('Success:', response.data);
             // if(!response.ok){
@@ -37,13 +61,39 @@ export const signinUser = createAsyncThunk(
         }
     })
 
+export const getUsers = createAsyncThunk(
+    "users/getUsers",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8000/api/userDetail",
+                {
+                    withCredentials: true
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
 const userSlice = createSlice({
     name: 'userDetail',
     initialState: {
-        userData: [],
+        userData: null,
         loading: false,
-        error: null
+        error: null,
+        isAuth: false,
 
+    },
+    reducers: {
+        logout: (state) => {
+            state.isAuth = false;
+            state.userData = null;
+            state.error = null;
+            localStorage.removeItem("isAuth");
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -66,12 +116,42 @@ const userSlice = createSlice({
             .addCase(signinUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.userData = action.payload
+                state.isAuth = true
             })
             .addCase(signinUser.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
             })
+            .addCase(signOutUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(signOutUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.userData = null
+                state.isAuth = false
+            })
+            .addCase(signOutUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+            .addCase(getUsers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getUsers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userData = action.payload;
+                state.isAuth = true;
+            })
+            .addCase(getUsers.rejected, (state, action) => {
+                state.loading = false;
+                state.userData = null;
+                state.isAuth = false;
+                state.error = action.payload;
+            })
     }
 })
 
+export const { logout } = userSlice.actions;
 export default userSlice.reducer
