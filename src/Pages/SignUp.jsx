@@ -1,28 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import { FaFacebook } from 'react-icons/fa'
 import { signupUser } from '../Features/UserSlice'
-import { Form, Formik, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import { SignupSchema } from '../Components/SignUpValidation'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 
 
-// Static Sign Up page — presentational only, no state/handlers.
 const SignUp = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    // const [error, setError] = useState("")
-    const error = useSelector(state => {
-        return state.userDetail.error;
-    })
 
     const handleSubmit = async (values) => {
         try {
-            const hamm = await dispatch(signupUser(values)).unwrap()
+            await dispatch(signupUser(values)).unwrap()
+            toast.success("Account created! Please sign in.")
             navigate("/signin")
         } catch (error) {
-            console.log("🚀 ~ handleSubmit ~ error:", error)
+            toast.error(error || "Could not create your account. Please try again.")
         }
     }
     const formik = useFormik({
@@ -136,9 +133,6 @@ const SignUp = () => {
                         Sign Up
                     </button>
                 </form>
-                {error &&
-                    <p className="auth-error">Something went wrong. Please check your details and try again.</p>
-                }
 
                 <div className="auth-divider">
                     <span>OR</span>

@@ -4,24 +4,21 @@ import { FcGoogle } from 'react-icons/fc'
 import { FaFacebook } from 'react-icons/fa'
 import { useFormik } from 'formik'
 import { signinUser } from '../Features/UserSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { SignInSchema } from '../Components/SignInValidation'
+import { toast } from 'react-toastify'
 
-// Static Sign In page — presentational only, no state/handlers.
 const SignIn = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    // const [error, setError] = useState("")
-    const error = useSelector(state => {
-        return state.userDetail.error;
-    })
 
     const handleSubmit = async (values) => {
         try {
-            const hamm = await dispatch(signinUser(values)).unwrap()
+            await dispatch(signinUser(values)).unwrap()
+            toast.success("Welcome back!")
             navigate("/")
         } catch (error) {
-            console.log("🚀 ~ handleSubmit ~ error:", error)
+            toast.error(error || "Could not sign you in. Please try again.")
         }
     }
     const formik = useFormik({

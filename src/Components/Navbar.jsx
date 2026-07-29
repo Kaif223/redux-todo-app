@@ -2,7 +2,8 @@ import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { FiLogOut, FiCheckSquare } from 'react-icons/fi'
-import { signOutUser } from '../Features/UserSlice'
+import { signOutUser, logout } from '../Features/UserSlice'
+import { toast } from 'react-toastify'
 
 const Navbar = () => {
     const dispatch = useDispatch()
@@ -11,10 +12,12 @@ const Navbar = () => {
     const handleLogout = async() => {
         try {
             await dispatch(signOutUser()).unwrap()
-            navigate('/signin', { replace: true })
-            
+            toast.success("You have been logged out.")
         } catch (error) {
             console.log(error)
+        } finally {
+            dispatch(logout())
+            navigate('/signin', { replace: true })
         }
     }
 

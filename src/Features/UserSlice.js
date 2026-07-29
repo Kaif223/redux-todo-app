@@ -1,5 +1,14 @@
-import { createSlice, createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios';
+
+// Pulls the most useful message out of an axios failure. The backend replies
+// with { message } in most places but { error } on a bad password, and if the
+// server is unreachable there is no response body at all — so try each in turn.
+const getErrorMessage = (error) =>
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    error.message ||
+    "Something went wrong. Please try again.";
 
 
 
@@ -17,7 +26,7 @@ export const signupUser = createAsyncThunk(
 
         } catch (error) {
             console.error('Error sending data:', error.message);
-            return rejectWithValue(error.message)
+            return rejectWithValue(getErrorMessage(error))
         }
     })
 
@@ -37,7 +46,7 @@ export const signinUser = createAsyncThunk(
 
         } catch (error) {
             console.error('Error sending data:', error.message);
-            return rejectWithValue(error.message)
+            return rejectWithValue(getErrorMessage(error))
         }
     })
 
@@ -50,14 +59,13 @@ export const signOutUser = createAsyncThunk(
             });
             return response.data
 
-            console.log('Success:', response.data);
             // if(!response.ok){
             //      throw new Error("somwthings went wrong ")
             // }
 
         } catch (error) {
             console.error('Error sending data:', error.message);
-            return rejectWithValue(error.message)
+            return rejectWithValue(getErrorMessage(error))
         }
     })
 
@@ -74,7 +82,7 @@ export const getUsers = createAsyncThunk(
 
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.message);
+            return rejectWithValue(getErrorMessage(error));
         }
     }
 );
@@ -92,7 +100,6 @@ const userSlice = createSlice({
             state.isAuth = false;
             state.userData = null;
             state.error = null;
-            localStorage.removeItem("isAuth");
         },
     },
     extraReducers: (builder) => {
@@ -144,11 +151,10 @@ const userSlice = createSlice({
                 state.userData = action.payload;
                 state.isAuth = true;
             })
-            .addCase(getUsers.rejected, (state, action) => {
+            .addCase(getUsers.rejected, (state) => {
                 state.loading = false;
                 state.userData = null;
                 state.isAuth = false;
-                state.error = action.payload;
             })
     }
 })
