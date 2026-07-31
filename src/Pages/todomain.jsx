@@ -43,59 +43,24 @@ const Todomain = () => {
     });
 
     useEffect(() => {
-        // localStorage.setItem("todos", JSON.stringify(todosItems))
         setIsLoading(false);
     }, [todosItems])
-
-    // useEffect(() => {
-    //     const data = JSON.parse(localStorage.getItem("todos")) || [];
-    //     setTodosItems(data);
-    // }, []);
 
     useEffect(() => {
         setCurrentPage(1);
     }, [searchItem, filterItem]);
 
-    // useEffect(() => {
-    //     const totalPages = Math.ceil(
-    //         filteredTodos.length / itemsPerPage
-    //     );
-
-    //     if (currentPage > totalPages - 1) {
-    //         setCurrentPage(0);
-    //     }
-    // }, [filteredTodos, itemsPerPage]);
-
-
 
     const handleDelete = (id) => {
-        // const updateTodos = todosItems.filter(item => item.id !== id);
-        // setTodosItems(updateTodos);
-        // dispatch(deleteTodo(id));
         dispatch(delTodos(id));
-        // localStorage.setItem("todos", JSON.stringify(updateTodos));
     };
     const handleEdit = (id) => {
-        // dispatch(setSelectedId(id));
-        // dispatch(editTodos(id));
+
         navigate(`/add-todo/${id}`)
     };
 
     const handleToggle = (item) => {
-        // const updated = todosItems.map(item =>
-        //     item.id === id ? {
-        //         ...item,
-        //         status:
-        //             item.status === "pending"
-        //                 ? "completed"
-        //                 : "pending"
-        //     }
-        //         : item
-        // );
 
-        // setTodosItems(updated);
-        // localStorage.setItem("todos", JSON.stringify(updated));
-        // dispatch(toggleStatus(id));
         const updateData = {
             status: item.status === "pending" ? "completed" : "pending"
         }
@@ -113,11 +78,7 @@ const Todomain = () => {
         setCurrentPage(1);
     }
 
-    const paginatedTodos = filteredTodos
-    // .slice(
-    //     currentPage * itemsPerPage,
-    //     currentPage * itemsPerPage + itemsPerPage
-    // );
+    const paginatedTodos = filteredTodos;
 
     const prevPage = () => {
         if (currentPage > 1) {

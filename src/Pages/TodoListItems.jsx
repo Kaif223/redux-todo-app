@@ -15,26 +15,7 @@ const TodoListItems = () => {
     const dispatch = useDispatch()
     const todosItems = useSelector(state => state.todo.todos)
 
-
-    // useEffect(() => {
-    //     localStorage.setItem("todos", JSON.stringify(todosItems))
-    // }, [todosItems])
-
-    // let todosItems = JSON.parse(localStorage.getItem("todos")) || [];
-
-    // let myId = localStorage.getItem("selectedId")
-    // const myId = useSelector(state => state.todo.selectedId)
     const { id } = useParams()
-
-    // useEffect(() => {
-    //     if (myId !== null) {
-    //         setitemField(todosItems.find(item => item.id == myId).userName)
-    //         setMailField(todosItems.find(item => item.id == myId).usermail)
-    //         setNumField(todosItems.find(item => item.id == myId).userNumber)
-    //         setDateField(todosItems.find(item => item.id == myId).userDate)
-    //     };
-
-    // }, [])
 
     useEffect(() => {
         if (id) {
@@ -52,12 +33,6 @@ const TodoListItems = () => {
 
     const handleSubmit = async() => {
         let userDetail = {
-            // id: myId !== null ? Number(myId) : Date.now(),
-            // userName: itemField,
-            // usermail: mailField,
-            // userNumber: numField,
-            // userDate: dateField,
-            // status: myId === null ? 'pending' : todosItems.find(item => item.id == myId).status
             userName: itemField,
             userMail: mailField,
             userNumber: numField,
@@ -82,18 +57,6 @@ const TodoListItems = () => {
             )
         }
 
-        // if (myId !== null) {
-        //     // const updateList = todosItems.map(item =>
-        //     //     item.id == myId ? userDetail : item
-        //     // )
-        //     // localStorage.setItem("todos", JSON.stringify(updateList))
-        //     // dispatch(updateTodo(userDetail))
-        // } else {
-        //     // const updateList = [...todosItems, userDetail]
-        //     // localStorage.setItem("todos", JSON.stringify(updateList))
-        //     dispatch(postTodos(userDetail))
-
-        // }
         navigate("/")
     };
 
