@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { addTodo, updateTodo } from '../Features/todoSlice'
+import { editTodos, postTodos, updateTodo } from '../Features/todoSlice'
 
 const TodoListItems = () => {
 
@@ -14,51 +14,86 @@ const TodoListItems = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const todosItems = useSelector(state => state.todo.todos)
-   
-   
-    useEffect(() => {
-        localStorage.setItem("todos", JSON.stringify(todosItems))
-    }, [todosItems])
+
+
+    // useEffect(() => {
+    //     localStorage.setItem("todos", JSON.stringify(todosItems))
+    // }, [todosItems])
 
     // let todosItems = JSON.parse(localStorage.getItem("todos")) || [];
 
     // let myId = localStorage.getItem("selectedId")
-    const myId = useSelector(state => state.todo.selectedId)
+    // const myId = useSelector(state => state.todo.selectedId)
+    const { id } = useParams()
+
+    // useEffect(() => {
+    //     if (myId !== null) {
+    //         setitemField(todosItems.find(item => item.id == myId).userName)
+    //         setMailField(todosItems.find(item => item.id == myId).usermail)
+    //         setNumField(todosItems.find(item => item.id == myId).userNumber)
+    //         setDateField(todosItems.find(item => item.id == myId).userDate)
+    //     };
+
+    // }, [])
 
     useEffect(() => {
-        if (myId !== null) {
-            setitemField(todosItems.find(item => item.id == myId).userName)
-            setMailField(todosItems.find(item => item.id == myId).usermail)
-            setNumField(todosItems.find(item => item.id == myId).userNumber)
-            setDateField(todosItems.find(item => item.id == myId).userDate)
-        };
+        if (id) {
+            const todo = todosItems.find(
+                item => item._id === id
+            )
+            if (todo) {
+                setitemField(todo.userName)
+                setMailField(todo.userMail)
+                setNumField(todo.userNumber)
+                setDateField(todo.userDate)
+            }
+        }
+    }, [id, todosItems])
 
-    }, [])
-
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         let userDetail = {
-            id: myId !== null ? Number(myId) : Date.now(),
+            // id: myId !== null ? Number(myId) : Date.now(),
+            // userName: itemField,
+            // usermail: mailField,
+            // userNumber: numField,
+            // userDate: dateField,
+            // status: myId === null ? 'pending' : todosItems.find(item => item.id == myId).status
             userName: itemField,
-            usermail: mailField,
+            userMail: mailField,
             userNumber: numField,
             userDate: dateField,
-            status: myId === null ? 'pending' : todosItems.find(item => item.id == myId).status
         }
-        if (userDetail.userName === "" || userDetail.usermail === "" || userDetail.userNumber === "") {
+        if (userDetail.userName === "" || userDetail.userMail === "" || userDetail.userNumber === "") {
             alert("please enter a value")
             return;
         }
-        if (myId !== null) {
-            // const updateList = todosItems.map(item =>
-            //     item.id == myId ? userDetail : item
-            // )
-            // localStorage.setItem("todos", JSON.stringify(updateList))
-            dispatch(updateTodo(userDetail))
-        } else {
-            // const updateList = [...todosItems, userDetail]
-            // localStorage.setItem("todos", JSON.stringify(updateList))
-            dispatch(addTodo(userDetail))
+
+        if (id) {
+           await dispatch(
+                editTodos({
+                    id,
+                    todoData: userDetail
+                })
+            )
         }
+        else {
+            await dispatch(
+                postTodos(userDetail)
+            )
+        }
+
+        // if (myId !== null) {
+        //     // const updateList = todosItems.map(item =>
+        //     //     item.id == myId ? userDetail : item
+        //     // )
+        //     // localStorage.setItem("todos", JSON.stringify(updateList))
+        //     // dispatch(updateTodo(userDetail))
+        // } else {
+        //     // const updateList = [...todosItems, userDetail]
+        //     // localStorage.setItem("todos", JSON.stringify(updateList))
+        //     dispatch(postTodos(userDetail))
+
+        // }
         navigate("/")
     };
 

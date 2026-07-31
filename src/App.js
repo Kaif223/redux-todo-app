@@ -8,15 +8,19 @@ import ProtectedRoute from "./Components/ProtectedRoute.jsx";
 import Layout from "./Components/Layout.jsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getUsers } from "./Features/UserSlice.js";
+import { getUsers, refreshToken } from "./Features/UserSlice.js";
 
 
 function App() {
-      const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(getUsers());
-    }, [dispatch]);
+  useEffect(() => {
+    const checkAuth = async () => {
+      await dispatch(refreshToken());
+      dispatch(getUsers());
+    }
+    checkAuth();
+  }, [dispatch]);
 
   return (
     <div className="App">
@@ -30,6 +34,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Todomain />} />
             <Route path="/add-todo" element={<TodoListItems />} />
+            <Route path="/add-todo/:id" element={<TodoListItems />} />
           </Route>
         </Route>
       </Routes>

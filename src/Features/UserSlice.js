@@ -86,6 +86,24 @@ export const getUsers = createAsyncThunk(
         }
     }
 );
+export const refreshToken = createAsyncThunk(
+    "users/refreshToken",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8000/api/refresh",
+                {},
+                {
+                    withCredentials: true
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+);
 const userSlice = createSlice({
     name: 'userDetail',
     initialState: {
@@ -155,6 +173,18 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.userData = null;
                 state.isAuth = false;
+            })
+            .addCase(refreshToken.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(refreshToken.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isAuth = true;
+            })
+            .addCase(refreshToken.rejected, (state, action) => {
+                state.loading = false;
+                state.isAuth = false;
+                state.error = action.payload;
             })
     }
 })

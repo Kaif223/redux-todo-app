@@ -2,23 +2,31 @@ import React, { useEffect, useState } from 'react'
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { deleteTodo, toggleStatus, setSelectedId } from '../Features/todoSlice';
+import { toggleStatus, getTodos, delTodos, editTodos } from '../Features/todoSlice';
 import { ClipLoader } from 'react-spinners'
 
 
 const Todomain = () => {
     const [darkmode, setDarkmode] = useState(false);
     // const [todosItems, setTodosItems] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [searchItem, setSearchItem] = useState("");
     const [filterItem, setFilterItem] = useState("all");
     const [isLoading, setIsLoading] = useState(true);
+    const total = useSelector(state => state.todo.total);
 
     const navigate = useNavigate();
     const todosItems = useSelector(state => state.todo.todos)
     const dispatch = useDispatch();
 
+
+    useEffect(() => {
+        dispatch(getTodos({
+            page: currentPage,
+            limit: itemsPerPage,
+        }))
+    }, [dispatch, currentPage, itemsPerPage])
 
     const filteredTodos = todosItems.filter((item) => {
         const matchSearch =
@@ -35,7 +43,7 @@ const Todomain = () => {
     });
 
     useEffect(() => {
-        localStorage.setItem("todos", JSON.stringify(todosItems))
+        // localStorage.setItem("todos", JSON.stringify(todosItems))
         setIsLoading(false);
     }, [todosItems])
 
@@ -45,33 +53,35 @@ const Todomain = () => {
     // }, []);
 
     useEffect(() => {
-        setCurrentPage(0);
+        setCurrentPage(1);
     }, [searchItem, filterItem]);
 
-    useEffect(() => {
-        const totalPages = Math.ceil(
-            filteredTodos.length / itemsPerPage
-        );
+    // useEffect(() => {
+    //     const totalPages = Math.ceil(
+    //         filteredTodos.length / itemsPerPage
+    //     );
 
-        if (currentPage > totalPages - 1) {
-            setCurrentPage(0);
-        }
-    }, [filteredTodos, itemsPerPage]);
+    //     if (currentPage > totalPages - 1) {
+    //         setCurrentPage(0);
+    //     }
+    // }, [filteredTodos, itemsPerPage]);
 
 
 
     const handleDelete = (id) => {
         // const updateTodos = todosItems.filter(item => item.id !== id);
         // setTodosItems(updateTodos);
-        dispatch(deleteTodo(id));
+        // dispatch(deleteTodo(id));
+        dispatch(delTodos(id));
         // localStorage.setItem("todos", JSON.stringify(updateTodos));
     };
     const handleEdit = (id) => {
-        dispatch(setSelectedId(id));
-        navigate("/add-todo")
+        // dispatch(setSelectedId(id));
+        // dispatch(editTodos(id));
+        navigate(`/add-todo/${id}`)
     };
 
-    const handleToggle = (id) => {
+    const handleToggle = (item) => {
         // const updated = todosItems.map(item =>
         //     item.id === id ? {
         //         ...item,
@@ -84,32 +94,41 @@ const Todomain = () => {
         // );
 
         // setTodosItems(updated);
-        dispatch(toggleStatus(id));
         // localStorage.setItem("todos", JSON.stringify(updated));
+        // dispatch(toggleStatus(id));
+        const updateData = {
+            status: item.status === "pending" ? "completed" : "pending"
+        }
+        dispatch(
+            editTodos({
+                id: item._id,
+                todoData: updateData
+            })
+        )
     };
 
 
     const paginationValue = (e) => {
         setItemsPerPage(Number(e.target.value));
-        setCurrentPage(0);
+        setCurrentPage(1);
     }
 
-    const paginatedTodos = filteredTodos.slice(
-        currentPage * itemsPerPage,
-        currentPage * itemsPerPage + itemsPerPage
-    );
+    const paginatedTodos = filteredTodos
+    // .slice(
+    //     currentPage * itemsPerPage,
+    //     currentPage * itemsPerPage + itemsPerPage
+    // );
 
     const prevPage = () => {
-        if (currentPage > 0) {
+        if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
         }
     };
 
     const nextPage = () => {
-        const totalPages = Math.ceil(
-            filteredTodos.length / itemsPerPage
-        );
-        if (currentPage < totalPages - 1) {
+
+        const totalPages = Math.ceil(total / itemsPerPage);
+        if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
         }
     };
@@ -146,7 +165,7 @@ const Todomain = () => {
                     </Link> */}
                     <button to="add-todo" id="addBtn" className="cutom-btn blue"
                         onClick={() => {
-                            dispatch(setSelectedId(null))
+                            // dispatch(setSelectedId(null))
                             navigate('/add-todo')
                         }}
                     >
@@ -173,9 +192,10 @@ const Todomain = () => {
                             <div className="list-items" id="mainListDiv">
                                 <ul id="listItems">
                                     {paginatedTodos.map((item, index) => (
-                                        <li key={index} onClick={() => handleToggle(item.id)}>
+                                        // <li key={index} onClick={() => handleToggle(item.id)}>
+                                        <li key={index} onClick={() => handleToggle(item)}>
                                             <p>{item.userName}</p>
-                                            <p>{item.usermail}</p>
+                                            <p>{item.userMail}</p>
                                             <p>{item.userNumber}</p>
                                             <p>{item.userDate}</p>
                                             <button
@@ -183,14 +203,14 @@ const Todomain = () => {
                                                 className='edit-btn'
                                                 onClick={(e) => {
                                                     e.stopPropagation()
-                                                    handleEdit(item.id)
+                                                    handleEdit(item._id)
                                                 }}
                                             >✏️</button>
                                             <button
                                                 type='submit'
                                                 onClick={(e) => {
                                                     e.stopPropagation()
-                                                    handleDelete(item.id)
+                                                    handleDelete(item._id)
                                                 }}
                                                 className='delete-btn secondary'
                                             >🗑️</button>
