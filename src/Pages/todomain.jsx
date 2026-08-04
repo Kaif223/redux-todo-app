@@ -12,10 +12,8 @@ const Todomain = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [searchItem, setSearchItem] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
     const [filterItem, setFilterItem] = useState("all");
-    // const [isLoading, setIsLoading] = useState(true);
-    // const total = useSelector(state => state.todo.total);
-    // const todosItems = useSelector(state => state.todo.todos)
     const {todos, loading , total} = useSelector(state => state.todo)
 
     const navigate = useNavigate();
@@ -26,29 +24,21 @@ const Todomain = () => {
         dispatch(getTodos({
             page: currentPage,
             limit: itemsPerPage,
-            search: searchItem,
+            search: debouncedSearch,
             status: filterItem,
         }))
-    }, [dispatch, currentPage, itemsPerPage, searchItem, filterItem])
+    }, [dispatch, currentPage, itemsPerPage, debouncedSearch, filterItem])
 
-    // const filteredTodos = todosItems;
-    // .filter((item) => {
-    //     const matchSearch =
-    //         item.userName
-    //             .toLowerCase()
-    //             .includes(searchItem.toLowerCase());
 
-    //     const matchStatus =
-    //         filterItem === "all"
-    //             ? true
-    //             : item.status === filterItem;
+  useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchItem);
+        }, 500);
 
-    //     return matchSearch && matchStatus;
-    // });
-
-    // useEffect(() => {
-    //     loading(false);
-    // }, [todos])
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [searchItem]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -195,11 +185,11 @@ const Todomain = () => {
                         <select
                             id="paginationDropdown"
                             value={itemsPerPage}
-                            onClick={paginationValue}
-                        >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
+                            onChange={paginationValue}
+                    >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={15}>15</option>
                         </select>
                         <button type='submit' id="preBtn" onClick={prevPage}>
                             &#10094;

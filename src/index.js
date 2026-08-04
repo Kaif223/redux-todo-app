@@ -6,8 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from 'react-redux';
 import { store } from './store/store'
+import { setupInterceptors } from './api/axios'
+import { logout } from './Features/UserSlice'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+setupInterceptors(store, logout);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
