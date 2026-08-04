@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { FiLogOut, FiCheckSquare } from 'react-icons/fi'
+import { FiLogOut, FiCheckSquare, FiShield } from 'react-icons/fi'
 import { signOutUser, logout } from '../Features/UserSlice'
 import { toast } from 'react-toastify'
 
@@ -41,6 +41,13 @@ const Navbar = () => {
                     className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
                 >
                     Add Todo
+                </NavLink>
+                <NavLink
+                    to="/admin"
+                    className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
+                >
+                    <FiShield style={{ marginRight: 6, verticalAlign: '-2px' }} />
+                    Admin
                 </NavLink>
             </nav>
 

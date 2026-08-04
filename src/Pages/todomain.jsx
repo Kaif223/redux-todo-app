@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getTodos, delTodos, editTodos } from '../Features/todoSlice';
 import { ClipLoader } from 'react-spinners'
-
+import SearchBar from '../Components/SearchBar';
+import FilterDropdown from '../Components/FilterDropdown';
+import Pagination from '../Components/Pagination';
 
 const Todomain = () => {
     const [darkmode, setDarkmode] = useState(false);
@@ -14,7 +16,7 @@ const Todomain = () => {
     const [searchItem, setSearchItem] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [filterItem, setFilterItem] = useState("all");
-    const {todos, loading , total} = useSelector(state => state.todo)
+    const { todos, loading, total } = useSelector(state => state.todo)
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -30,7 +32,7 @@ const Todomain = () => {
     }, [dispatch, currentPage, itemsPerPage, debouncedSearch, filterItem])
 
 
-  useEffect(() => {
+    useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(searchItem);
         }, 500);
@@ -97,24 +99,30 @@ const Todomain = () => {
             >☀️</button>
             <div className="inner-list-items">
                 <div className="top-button">
-                    <input
-                        type="text"
-                        name=""
-                        id="searchBox"
+                    <SearchBar
                         value={searchItem}
-                        onChange={(e) => setSearchItem(e.target.value)}
-                        placeholder="search by title"
-                        style={{ "margin": 0 }}
+                        onChange={setSearchItem}
                     />
-                    <select
-                        id="filterDropdown"
+                    <FilterDropdown
                         value={filterItem}
-                        onChange={(e) => setFilterItem(e.target.value)}
-                    >
-                        <option value="all">All</option>
-                        <option value="completed">Check Items</option>
-                        <option value="pending">Uncheck Items</option>
-                    </select>
+                        onChange={setFilterItem}
+                        options={[
+                            {
+                                label: "All",
+                                value: "all"
+                            },
+                            {
+                                label: "Check Items",
+                                value: "completed"
+                            },
+                            {
+                                label: "Uncheck Items",
+                                value: "pending"
+                            }
+
+                        ]}
+
+                    />
                     {/* <Link to="add-todo" id="addBtn" className="cutom-btn blue">
                         Add Items
                     </Link> */}
@@ -178,26 +186,14 @@ const Todomain = () => {
                             </div>
 
                     }
-                    <div className="pagination-wrapper">
-                        <p>
-                            Todos per page:
-                        </p>
-                        <select
-                            id="paginationDropdown"
-                            value={itemsPerPage}
-                            onChange={paginationValue}
-                    >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={15}>15</option>
-                        </select>
-                        <button type='submit' id="preBtn" onClick={prevPage}>
-                            &#10094;
-                        </button>
-                        <button type='submit' id="nextBtn" onClick={nextPage}>
-                            &#10095;
-                        </button>
-                    </div>
+                    <Pagination
+                        itemsPerPage={itemsPerPage}
+                        paginationValue={paginationValue}
+                        currentPage={currentPage}
+                        prevPage={prevPage}
+                        nextPage={nextPage}
+                        total={total}
+                    />
                 </div>
             </div>
         </section>
