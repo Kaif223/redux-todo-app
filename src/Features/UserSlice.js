@@ -71,10 +71,10 @@ export const signOutUser = createAsyncThunk(
 
 export const getUsers = createAsyncThunk(
     "users/getUsers",
-    async (_, { rejectWithValue }) => {
+    async ({ page, limit, search }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                "http://localhost:8000/api/userDetail",
+                `http://localhost:8000/api/userDetail?page=${page}&limit=${limit}&search=${search}`,
                 {
                     withCredentials: true
                 }
@@ -86,6 +86,43 @@ export const getUsers = createAsyncThunk(
         }
     }
 );
+
+export const delUser = createAsyncThunk(
+    "users/delUser",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axios.delete(
+                `http://localhost:8000/api/userDetail/${id}`,
+                {
+                    withCredentials: true
+                }
+            );
+
+        return id;
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+export const editUserName = createAsyncThunk(
+    "users/editUserName",
+    async ({ id, userData }, { rejectWithValue }) => {
+        try {
+            const response = await axios.patch(
+                `http://localhost:8000/api/userDetail/${id}`,
+                userData,
+                {
+                    withCredentials: true
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+
 export const refreshToken = createAsyncThunk(
     "users/refreshToken",
     async (_, { rejectWithValue }) => {
@@ -107,16 +144,18 @@ export const refreshToken = createAsyncThunk(
 const userSlice = createSlice({
     name: 'userDetail',
     initialState: {
-        userData: null,
+        currentUser: null,
+        userData: [],
         loading: false,
         error: null,
+        total: 0,
         isAuth: false,
 
     },
     reducers: {
         logout: (state) => {
             state.isAuth = false;
-            state.userData = null;
+            state.userData = [];
             state.error = null;
         },
     },
@@ -140,7 +179,7 @@ const userSlice = createSlice({
             })
             .addCase(signinUser.fulfilled, (state, action) => {
                 state.loading = false
-                state.userData = action.payload
+                state.currentUser = action.payload.userData;
                 state.isAuth = true
             })
             .addCase(signinUser.rejected, (state, action) => {
@@ -153,7 +192,7 @@ const userSlice = createSlice({
             })
             .addCase(signOutUser.fulfilled, (state, action) => {
                 state.loading = false
-                state.userData = null
+                state.userData = []
                 state.isAuth = false
             })
             .addCase(signOutUser.rejected, (state, action) => {
@@ -166,12 +205,15 @@ const userSlice = createSlice({
             })
             .addCase(getUsers.fulfilled, (state, action) => {
                 state.loading = false;
-                state.userData = action.payload;
+                state.userData = action.payload.users ?? [];
+                state.total = action.payload.total ?? 0;
                 state.isAuth = true;
             })
-            .addCase(getUsers.rejected, (state) => {
+            .addCase(getUsers.rejected, (state, action) => {
                 state.loading = false;
-                state.userData = null;
+                state.userData = [];
+                state.total = 0;
+                state.error = action.payload;
                 state.isAuth = false;
             })
             .addCase(refreshToken.pending, (state) => {
@@ -185,6 +227,33 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.isAuth = false;
                 state.error = action.payload;
+            })
+            .addCase(delUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(delUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.userData = state.userData.filter(item => item._id !== action.payload)
+            })
+            .addCase(delUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+            .addCase(editUserName.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(editUserName.fulfilled, (state, action) => {
+                state.loading = false
+                const index = state.userData.findIndex(item => item._id === action.payload._id)
+                if (index !== -1) {
+                    state.userData[index] = action.payload
+                }
+            })
+            .addCase(editUserName.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
             })
     }
 })

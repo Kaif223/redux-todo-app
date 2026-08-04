@@ -1,13 +1,10 @@
 import React from 'react'
 import { FiUsers, FiList, FiCheckCircle, FiClock } from 'react-icons/fi'
+import { getDashboardStats } from '../../Features/admin/adminThunk';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 // ---- static demo data ----
-const stats = [
-    { label: "Total Users", value: "1,248", icon: <FiUsers />, tone: "" },
-    { label: "Total Todos", value: "3,672", icon: <FiList />, tone: "" },
-    { label: "Completed", value: "2,415", icon: <FiCheckCircle />, tone: "green" },
-    { label: "Pending", value: "1,257", icon: <FiClock />, tone: "yellow" },
-];
 
 const monthly = [
     { month: "Jan", users: 18, todos: 42 },
@@ -24,6 +21,20 @@ const maxValue = 80;
 const yTicks = [80, 60, 40, 20, 0];
 
 const AdminAnalytics = () => {
+
+    const dispatch = useDispatch();
+
+    const { totalUsers, totalTodos } = useSelector((state) => state.dashboard);
+
+    useEffect(() => {
+        dispatch(getDashboardStats());
+    }, [dispatch]);
+    const stats = [
+        { label: "Total Users", value: totalUsers, icon: <FiUsers />, tone: "" },
+        { label: "Total Todos", value: totalTodos, icon: <FiList />, tone: "" },
+        // { label: "Completed", value: "2,415", icon: <FiCheckCircle />, tone: "green" },
+        // { label: "Pending", value: "1,257", icon: <FiClock />, tone: "yellow" },
+    ];
     return (
         <>
             <div className="page-head">

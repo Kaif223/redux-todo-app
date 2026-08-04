@@ -23,7 +23,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       await dispatch(refreshToken());
-      dispatch(getUsers());
+      // dispatch(getUsers());
     }
     checkAuth();
   }, [dispatch]);
