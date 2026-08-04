@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toggleStatus, getTodos, delTodos, editTodos } from '../Features/todoSlice';
+import { getTodos, delTodos, editTodos } from '../Features/todoSlice';
 import { ClipLoader } from 'react-spinners'
 
 
@@ -13,11 +13,12 @@ const Todomain = () => {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [searchItem, setSearchItem] = useState("");
     const [filterItem, setFilterItem] = useState("all");
-    const [isLoading, setIsLoading] = useState(true);
-    const total = useSelector(state => state.todo.total);
+    // const [isLoading, setIsLoading] = useState(true);
+    // const total = useSelector(state => state.todo.total);
+    // const todosItems = useSelector(state => state.todo.todos)
+    const {todos, loading , total} = useSelector(state => state.todo)
 
     const navigate = useNavigate();
-    const todosItems = useSelector(state => state.todo.todos)
     const dispatch = useDispatch();
 
 
@@ -25,26 +26,29 @@ const Todomain = () => {
         dispatch(getTodos({
             page: currentPage,
             limit: itemsPerPage,
+            search: searchItem,
+            status: filterItem,
         }))
-    }, [dispatch, currentPage, itemsPerPage])
+    }, [dispatch, currentPage, itemsPerPage, searchItem, filterItem])
 
-    const filteredTodos = todosItems.filter((item) => {
-        const matchSearch =
-            item.userName
-                .toLowerCase()
-                .includes(searchItem.toLowerCase());
+    // const filteredTodos = todosItems;
+    // .filter((item) => {
+    //     const matchSearch =
+    //         item.userName
+    //             .toLowerCase()
+    //             .includes(searchItem.toLowerCase());
 
-        const matchStatus =
-            filterItem === "all"
-                ? true
-                : item.status === filterItem;
+    //     const matchStatus =
+    //         filterItem === "all"
+    //             ? true
+    //             : item.status === filterItem;
 
-        return matchSearch && matchStatus;
-    });
+    //     return matchSearch && matchStatus;
+    // });
 
-    useEffect(() => {
-        setIsLoading(false);
-    }, [todosItems])
+    // useEffect(() => {
+    //     loading(false);
+    // }, [todos])
 
     useEffect(() => {
         setCurrentPage(1);
@@ -78,7 +82,7 @@ const Todomain = () => {
         setCurrentPage(1);
     }
 
-    const paginatedTodos = filteredTodos;
+    // const paginatedTodos = filteredTodos;
 
     const prevPage = () => {
         if (currentPage > 1) {
@@ -134,7 +138,7 @@ const Todomain = () => {
                     </button>
                 </div>
                 <div className="pagination-section">
-                    {isLoading ?
+                    {loading ?
                         <div
                             style={{
                                 display: "flex",
@@ -147,14 +151,14 @@ const Todomain = () => {
                                 size={50} />
                         </div>
                         :
-                        filteredTodos.length === 0
+                        todos.length === 0
                             ? <p className='mt-5' style={{ textAlign: "center" }}> No Data Found! </p>
                             :
                             <div className="list-items" id="mainListDiv">
                                 <ul id="listItems">
-                                    {paginatedTodos.map((item, index) => (
+                                    {todos.map((item, index) => (
                                         // <li key={index} onClick={() => handleToggle(item.id)}>
-                                        <li key={index} onClick={() => handleToggle(item)}>
+                                        <li key={item._id} onClick={() => handleToggle(item)}>
                                             <p>{item.userName}</p>
                                             <p>{item.userMail}</p>
                                             <p>{item.userNumber}</p>
@@ -190,6 +194,7 @@ const Todomain = () => {
                         </p>
                         <select
                             id="paginationDropdown"
+                            value={itemsPerPage}
                             onClick={paginationValue}
                         >
                             <option value="5">5</option>

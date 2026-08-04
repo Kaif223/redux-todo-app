@@ -31,7 +31,7 @@ const TodoListItems = () => {
         }
     }, [id, todosItems])
 
-    const handleSubmit = async() => {
+    const handleSubmit = async () => {
         let userDetail = {
             userName: itemField,
             userMail: mailField,
@@ -44,7 +44,7 @@ const TodoListItems = () => {
         }
 
         if (id) {
-           await dispatch(
+            await dispatch(
                 editTodos({
                     id,
                     todoData: userDetail
@@ -73,22 +73,30 @@ const TodoListItems = () => {
                     Todo App
                 </h1>
 
-                <input type="text" id="myInput" placeholder="Enter item"
-                    value={itemField}
-                    onChange={e => setitemField(e.target.value)}
-                />
-                <input type="email" id="inputEmail" placeholder="Enter email"
-                    value={mailField}
-                    onChange={e => setMailField(e.target.value)}
-                />
-                <input type="number" id="inputNumber" placeholder="Enter Number"
-                    value={numField}
-                    onChange={e => setNumField(e.target.value)}
-                />
-                <input type="date" id="inputDate" placeholder="Enter date"
-                    value={dateField}
-                    onChange={e => setDateField(e.target.value)}
-                />
+                <div className='input-div w-100'>
+                    <input type="text" id="myInput" placeholder="Enter item"
+                        value={itemField}
+                        onChange={e => setitemField(e.target.value)}
+                    />
+                </div>
+                <div className='input-div w-100'>
+                    <input type="email" id="inputEmail" placeholder="Enter email"
+                        value={mailField}
+                        onChange={e => setMailField(e.target.value)}
+                    />
+                </div>
+                <div className='input-div w-100'>
+                    <input type="number" id="inputNumber" placeholder="Enter Number"
+                        value={numField}
+                        onChange={e => setNumField(e.target.value)}
+                    />
+                </div>
+                <div className='input-div w-100'>
+                    <input type="date" id="inputDate" placeholder="Enter date"
+                        value={dateField}
+                        onChange={e => setDateField(e.target.value)}
+                    />
+                </div>
 
                 <div className="btns-div">
                     <Link to="/" value="Save" id="backbtn" className="cutom-btn">

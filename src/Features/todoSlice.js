@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from 'axios';
+import api from './../api/axios';
 
 
 const getErrorMessage = (error) =>
@@ -10,11 +10,13 @@ const getErrorMessage = (error) =>
 
 export const getTodos = createAsyncThunk(
     "todos/getTodos",
-    async ({page, limit}, { rejectWithValue }) => {
+    async ({page, limit, search, status}, { rejectWithValue }) => {
         try {
-            const response = await axios.get(
-                `http://localhost:8000/api/todos?page=${page}&limit=${limit}`,
-
+            const response = await api.get(
+                `/todos?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+                {
+                    withCredentials: true
+                }
             );
 
             return response.data;
@@ -28,9 +30,12 @@ export const postTodos = createAsyncThunk(
     "todos/postTodos",
     async (todoData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(
-                "http://localhost:8000/api/todos",
-                todoData
+            const response = await api.post(
+                "/todos",
+                todoData,
+                {
+                    withCredentials: true
+                }
             );
 
             return response.data;
@@ -44,8 +49,11 @@ export const delTodos = createAsyncThunk(
     "todos/delTodos",
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(
-                `http://localhost:8000/api/todos/${id}`,
+            const response = await api.delete(
+                `/todos/${id}`,
+                {
+                    withCredentials: true
+                }
             );
 
             return id;
@@ -58,8 +66,12 @@ export const editTodos = createAsyncThunk(
     "todos/editTodos",
     async ({id, todoData}, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(
-                "http://localhost:8000/api/todos/${id}",
+            const response = await api.patch(
+                `/todos/${id}`,
+                todoData,
+                {
+                    withCredentials: true
+                }
             );
 
             return response.data.todo;
