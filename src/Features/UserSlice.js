@@ -150,11 +150,13 @@ const userSlice = createSlice({
         error: null,
         total: 0,
         isAuth: false,
+        authChecked: false,
 
     },
     reducers: {
         logout: (state) => {
             state.isAuth = false;
+            state.currentUser = null;
             state.userData = [];
             state.error = null;
         },
@@ -179,8 +181,9 @@ const userSlice = createSlice({
             })
             .addCase(signinUser.fulfilled, (state, action) => {
                 state.loading = false
-                state.currentUser = action.payload.userData;
+                state.currentUser = action.payload.user
                 state.isAuth = true
+                state.authChecked = true
             })
             .addCase(signinUser.rejected, (state, action) => {
                 state.loading = false
@@ -193,6 +196,7 @@ const userSlice = createSlice({
             .addCase(signOutUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.userData = []
+                state.currentUser = null
                 state.isAuth = false
             })
             .addCase(signOutUser.rejected, (state, action) => {
@@ -203,18 +207,17 @@ const userSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
+           
             .addCase(getUsers.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userData = action.payload.users ?? [];
                 state.total = action.payload.total ?? 0;
-                state.isAuth = true;
             })
             .addCase(getUsers.rejected, (state, action) => {
                 state.loading = false;
                 state.userData = [];
                 state.total = 0;
                 state.error = action.payload;
-                state.isAuth = false;
             })
             .addCase(refreshToken.pending, (state) => {
                 state.loading = true;
@@ -222,11 +225,14 @@ const userSlice = createSlice({
             .addCase(refreshToken.fulfilled, (state, action) => {
                 state.loading = false;
                 state.isAuth = true;
+                state.currentUser = action.payload.user ?? null;
+                state.authChecked = true;
             })
             .addCase(refreshToken.rejected, (state, action) => {
                 state.loading = false;
                 state.isAuth = false;
-                state.error = action.payload;
+                state.currentUser = null;
+                state.authChecked = true;
             })
             .addCase(delUser.pending, (state) => {
                 state.loading = true

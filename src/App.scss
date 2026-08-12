@@ -22,6 +22,7 @@ $imgBlackFilter: brightness(0) saturate(100%) invert(14%) sepia(11%) saturate(28
 
 // --- Variable aliases (shared with portal App.scss files) ---
 $main: $primary-blue;
+$blue: $primary-blue;
 $dark-black: $primary02;
 $border_color: $border-secondary;
 $heading_color: #292b2d;
@@ -672,4 +673,141 @@ $navbar-height: 64px;
       color: #292b2d;
     }
   }
+}
+
+// --- Error / Unauthorized pages ---
+
+.error-div {
+  width: 100%;
+  height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 80px;
+  @media screen and (max-width: 767px) {
+    padding-inline: 20px;
+  }
+
+  .inner-data {
+    border: 1px solid #eaeaea;
+    box-shadow: 0px 2px 8px -1px #0f172a14;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 16px;
+    min-width: 420px;
+
+    @media screen and (max-width: 767px) {
+      min-width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 26px;
+      font-size: 48px !important;
+      line-height: 100% !important;
+      color: $heading_color !important;
+      &.small {
+        font-size: 32px !important;
+        line-height: 40px !important;
+      }
+    }
+
+    .find-btn {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 150%;
+      background-color: $blue;
+      border: 1px solid $blue;
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      color: #fefefe !important;
+      margin-top: 0;
+      font-family: $nunito !important;
+      display: block;
+    }
+    .session-img-div {
+      text-align: center;
+      margin-bottom: 26px;
+
+      .img-session {
+        width: 112px;
+        height: 82px;
+        object-fit: cover;
+      }
+    }
+
+    .error-image-div {
+      text-align: center;
+      width: 123px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .internet-image-div {
+      text-align: center;
+      width: 247px;
+      height: 174px;
+      object-fit: contain;
+    }
+
+    .server-image-div {
+      text-align: center;
+      width: 134px;
+      height: 134px;
+      object-fit: contain;
+    }
+  }
+
+  img {
+    height: 350px;
+  }
+
+  h1 {
+    font-size: 38px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  button {
+    margin-top: 20px;
+  }
+
+  .error-msg-div {
+    box-shadow: 0px 1px 4px 0px #0f172a0a;
+    border: 1px solid var(--Error-200, #fecaca);
+    background-color: #fef2f2;
+    border-radius: 8px;
+    padding: 15px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 420px;
+    @media screen and (max-width: 767px) {
+      min-width: 100%;
+    }
+
+    img,
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    p {
+      margin: 0;
+      font-family: $nunito !important;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 150%;
+      color: #ef4444;
+    }
+  }
+}
+
+.route-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(var(--vh, 1vh) * 100);
 }
