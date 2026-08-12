@@ -42,13 +42,13 @@ const Navbar = () => {
                 >
                     Add Todo
                 </NavLink>
-                <NavLink
+                {/* <NavLink
                     to="/admin"
                     className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
                 >
                     <FiShield style={{ marginRight: 6, verticalAlign: '-2px' }} />
                     Admin
-                </NavLink>
+                </NavLink> */}
             </nav>
 
             <button type="button" className="logout-btn" onClick={handleLogout}>

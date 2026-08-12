@@ -14,9 +14,16 @@ const SignIn = () => {
 
     const handleSubmit = async (values) => {
         try {
-            await dispatch(signinUser(values)).unwrap()
+            const result = await dispatch(signinUser(values))
             toast.success("Welcome back!")
-            navigate("/")
+            if (signinUser.fulfilled.match(result)) {
+                const user = result.payload.user;
+                if (user.role === "admin") {
+                    navigate('/admin')
+                } else {
+                    navigate("/")
+                }
+            }
         } catch (error) {
             toast.error(error || "Could not sign you in. Please try again.")
         }
