@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.scss'
 import './Admin.scss'
 import TodoListItems from "./Pages/TodoListItems.jsx";
+import Profile from "./Pages/Profile.jsx";
 import SignUp from "./Pages/SignUp.jsx";
 import SignIn from "./Pages/SignIn.jsx";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
@@ -49,6 +50,7 @@ function App() {
           <Route path="/" element={<Todomain />} />
           <Route path="/add-todo" element={<TodoListItems />} />
           <Route path="/add-todo/:id" element={<TodoListItems />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
         {/* </Route> */}
 

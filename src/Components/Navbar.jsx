@@ -42,6 +42,12 @@ const Navbar = () => {
                 >
                     Add Todo
                 </NavLink>
+                <NavLink
+                    to="/profile"
+                    className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}
+                >
+                    Profile
+                </NavLink>
                 {/* <NavLink
                     to="/admin"
                     className={({ isActive }) => `navbar-link ${isActive ? 'active' : ''}`}

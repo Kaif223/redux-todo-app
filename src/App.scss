@@ -486,6 +486,108 @@ $navbar-height: 64px;
     }
 }
 
+// ---- Profile page ----
+.profile-card {
+    margin-top: 60px;
+    width: 100%;
+    max-width: 420px;
+    height: fit-content;
+    padding: 32px 24px;
+    text-align: center;
+    background: $white;
+    border: 1px solid $border-secondary;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.08);
+
+    .profile-avatar-wrap {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid $primary-blue;
+        object-fit: cover;
+        display: block;
+    }
+
+    // Sits on the avatar's lower-right corner, the usual place to edit a profile.
+    .profile-edit-btn {
+        position: absolute;
+        right: 0;
+        bottom: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        color: $white;
+        background: $primary-blue;
+        border: 2px solid $white;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: $transition;
+
+        svg {
+            font-size: 14px;
+        }
+
+        &:hover {
+            background: #0d6ae0;
+        }
+    }
+
+    .profile-name {
+        margin: 16px 0 4px;
+        font-family: $poppins;
+        font-size: 20px;
+        font-weight: 600;
+        color: $heading_color;
+    }
+
+    .profile-mail {
+        margin: 0;
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .profile-details {
+        list-style: none;
+        margin: 24px 0 0;
+        padding: 0;
+        text-align: left;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-top: 1px solid $border-secondary;
+            font-size: 14px;
+
+            svg {
+                color: $primary-blue;
+                font-size: 16px;
+                flex-shrink: 0;
+            }
+
+            .detail-label {
+                color: #64748b;
+            }
+
+            .detail-value {
+                margin-left: auto;
+                font-weight: 600;
+                color: $heading_color;
+                word-break: break-all;
+            }
+        }
+    }
+}
+
 @media (max-width: 600px) {
     .navbar {
         padding: 0 14px;
