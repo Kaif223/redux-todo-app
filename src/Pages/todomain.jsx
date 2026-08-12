@@ -16,19 +16,24 @@ const Todomain = () => {
     const [searchItem, setSearchItem] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [filterItem, setFilterItem] = useState("all");
-    const { todos, loading, total } = useSelector(state => state.todo)
+    const { todos, loading, total, totalPages } = useSelector(state => state.todo)
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
 
     useEffect(() => {
-        dispatch(getTodos({
+        const params = {
             page: currentPage,
             limit: itemsPerPage,
-            search: debouncedSearch,
-            status: filterItem,
-        }))
+        }
+        if (debouncedSearch.trim()) {
+            params.search = debouncedSearch.trim();
+        }
+        if (filterItem && filterItem !== "all") {
+            params.status = filterItem;
+        }
+        dispatch(getTodos(params))
     }, [dispatch, currentPage, itemsPerPage, debouncedSearch, filterItem])
 
 
@@ -84,7 +89,6 @@ const Todomain = () => {
 
     const nextPage = () => {
 
-        const totalPages = Math.ceil(total / itemsPerPage);
         if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
         }

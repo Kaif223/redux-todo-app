@@ -74,8 +74,13 @@ export const getUsers = createAsyncThunk(
     async ({ page, limit, search }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `http://localhost:8000/api/userDetail?page=${page}&limit=${limit}&search=${search}`,
+                "http://localhost:8000/api/userDetail",
                 {
+                    params: {
+                        page,
+                        limit,
+                        ...(search && { search }),
+                    },
                     withCredentials: true
                 }
             );
@@ -98,7 +103,7 @@ export const delUser = createAsyncThunk(
                 }
             );
 
-        return id;
+            return id;
         } catch (error) {
             return rejectWithValue(getErrorMessage(error));
         }
@@ -146,6 +151,9 @@ const userSlice = createSlice({
     initialState: {
         currentUser: null,
         userData: [],
+        total: 0,
+        totalPages: 0,
+        currentPage: 1,
         loading: false,
         error: null,
         total: 0,
@@ -207,11 +215,13 @@ const userSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-           
+
             .addCase(getUsers.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userData = action.payload.users ?? [];
                 state.total = action.payload.total ?? 0;
+                state.totalPages = action.payload.totalPages;
+                state.currentPage = action.payload.currentPage;
             })
             .addCase(getUsers.rejected, (state, action) => {
                 state.loading = false;

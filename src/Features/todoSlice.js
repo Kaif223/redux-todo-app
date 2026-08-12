@@ -10,11 +10,17 @@ const getErrorMessage = (error) =>
 
 export const getTodos = createAsyncThunk(
     "todos/getTodos",
-    async ({page, limit, search, status}, { rejectWithValue }) => {
+    async ({ page, limit, search, status }, { rejectWithValue }) => {
         try {
             const response = await api.get(
-                `/todos?page=${page}&limit=${limit}&search=${search}&status=${status}`,
+                "/todos",
                 {
+                    params: {
+                        page,
+                        limit,
+                        ...(search && { search }),
+                        ...(status && status !== "all" && { status }),
+                    },
                     withCredentials: true
                 }
             );
@@ -85,6 +91,8 @@ export const editTodos = createAsyncThunk(
 const initialState = {
     todos: [],
     total: 0,
+    totalPages: 0,
+    currentPage: 1,
     loading: false,
     error: null,
     // selectedId: null,

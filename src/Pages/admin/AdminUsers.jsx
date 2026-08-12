@@ -19,7 +19,7 @@ const AdminUsers = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const { userData, loading, total } = useSelector((state) => state.userDetail);
+    const { userData, loading, total, totalPages } = useSelector((state) => state.userDetail);
     // Safety net: a failed request or a logout can leave userData empty/absent,
     // and this table is rendered as soon as loading flips back to false.
     const users = Array.isArray(userData) ? userData : [];
@@ -32,13 +32,18 @@ const AdminUsers = () => {
     const [editName, setEditName] = useState("");
     const [editNamelast, setEditNamelast] = useState("");
 
+
+
+
     useEffect(() => {
-        dispatch(getUsers({
+        const params = {
             page: currentPage,
             limit: itemsPerPage,
-            search: debouncedSearch,
         }
-        ))
+        if(debouncedSearch.trim()){
+            params.search = debouncedSearch.trim();
+        }
+        dispatch(getUsers(params))
     }, [dispatch, currentPage, itemsPerPage, debouncedSearch])
 
 
@@ -63,7 +68,7 @@ const AdminUsers = () => {
     };
 
     const nextPage = () => {
-        if (currentPage < Math.ceil(total / itemsPerPage)) setCurrentPage(currentPage + 1);
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
     };
 
     const openEditModal = (user) => {
