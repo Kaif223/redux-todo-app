@@ -487,6 +487,59 @@ $navbar-height: 64px;
 }
 
 // ---- Profile page ----
+.profile-save-btn {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 13px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 14px;
+    white-space: nowrap;
+    color: $white;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.5);
+    transition: $transition;
+
+    svg {
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        background: $primary-blue;
+        border-color: $primary-blue;
+    }
+
+    &:active {
+        transform: translate(-50%, -50%) scale(0.96);
+    }
+
+    &:focus-visible {
+        outline: 2px solid $white;
+        outline-offset: 1px;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.8;
+
+        &:hover {
+            background: rgba(15, 23, 42, 0.65);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+    }
+}
+
 .profile-card {
     margin-top: 60px;
     width: 100%;
@@ -502,6 +555,9 @@ $navbar-height: 64px;
     .profile-avatar-wrap {
         position: relative;
         display: inline-block;
+
+        // Only rendered once a new file is picked. Floats over the avatar so the
+        // preview stays visible behind the confirm action.
     }
 
     .profile-avatar {

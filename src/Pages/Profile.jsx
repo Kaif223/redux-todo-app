@@ -1,18 +1,78 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { FiUser, FiMail, FiEdit2 } from 'react-icons/fi'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { FiUser, FiMail, FiEdit2, FiCheck } from 'react-icons/fi'
+import { ClipLoader } from 'react-spinners'
+import { toast } from 'react-toastify'
 import profileAvatar from '../Assets/images/profile-avatar.svg'
+import { updateMyProfile } from '../Features/UserSlice'
 
-// Read-only profile: a static avatar with the signed-in user's name and mail.
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+
 const Profile = () => {
-    const { currentUser } = useSelector((state) => state.userDetail)
+    const dispatch = useDispatch();
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const { currentUser, profileSaving } = useSelector((state) => state.userDetail)
 
+    const handleImageSelect = (e) => {
+        const file = e.target.files[0];
+        e.target.value = "";
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please choose an image file.");
+            return;
+        }
+        if (file.size > MAX_IMAGE_SIZE) {
+            toast.error("Image must be 2MB or smaller.");
+            return;
+        }
+        if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+        }
+        setImage(file);
+        setImagePreview(URL.createObjectURL(file));
+    }
+
+    const handleProfileUpdate = async () => {
+        try {
+            await dispatch(updateMyProfile({ image })).unwrap();
+            URL.revokeObjectURL(imagePreview);
+            setImage(null);
+            setImagePreview(null);
+            toast.success("Profile image updated.");
+        } catch (error) {
+            toast.error(error || "Could not update the profile image.");
+        }
+    }
     return (
         <section className="main-section">
+            {image && (
+                <button
+                    type="button"
+                    className="profile-save-btn"
+                    onClick={handleProfileUpdate}
+                    disabled={profileSaving}
+                >
+                    {profileSaving
+                        ? <ClipLoader color="#fff" size={13} />
+                        : <FiCheck />}
+                    <span>{profileSaving ? "Saving..." : "Save Image"}</span>
+                </button>
+            )}
+
             <div className="profile-card">
                 <div className="profile-avatar-wrap">
+                    <input
+                        id="profile-image-input"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={handleImageSelect}
+                    />
                     <img
-                        src={profileAvatar}
+                        src={imagePreview ||
+                            currentUser?.profileImage?.url ||
+                            profileAvatar}
                         alt="Profile"
                         className="profile-avatar"
                     />
@@ -21,6 +81,10 @@ const Profile = () => {
                         className="profile-edit-btn"
                         aria-label="Edit profile"
                         title="Edit profile"
+                        disabled={profileSaving}
+                        onClick={() => {
+                            document.getElementById("profile-image-input").click();
+                        }}
                     >
                         <FiEdit2 />
                     </button>

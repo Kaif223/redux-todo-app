@@ -128,6 +128,36 @@ export const editUserName = createAsyncThunk(
     }
 )
 
+
+export const updateMyProfile = createAsyncThunk(
+    "users/updateMyProfile",
+    async ({ userData = {}, image }, { rejectWithValue }) => {
+        try {
+            const formData = new FormData();
+
+            Object.entries(userData).forEach(([key, value]) => {
+                formData.append(key, value);
+            })
+
+            if (image) {
+                formData.append('image', image)
+            }
+
+            const response = await axios.patch(
+                "http://localhost:8000/api/me",
+                formData,
+                {
+                    withCredentials: true
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+)
+
 export const refreshToken = createAsyncThunk(
     "users/refreshToken",
     async (_, { rejectWithValue }) => {
@@ -159,6 +189,7 @@ const userSlice = createSlice({
         total: 0,
         isAuth: false,
         authChecked: false,
+        profileSaving: false,
 
     },
     reducers: {
@@ -266,9 +297,28 @@ const userSlice = createSlice({
                 if (index !== -1) {
                     state.userData[index] = action.payload
                 }
+                if(state.currentUser?._id === action.payload._id){
+                    state.currentUser = action.payload
+                }
             })
             .addCase(editUserName.rejected, (state, action) => {
                 state.loading = false
+                state.error = action.payload
+            })
+            .addCase(updateMyProfile.pending, (state) => {
+                state.profileSaving = true
+                state.error = null
+            })
+            .addCase(updateMyProfile.fulfilled, (state, action) => {
+                state.profileSaving = false
+                state.currentUser = action.payload
+                const index = state.userData.findIndex(item => item._id === action.payload._id)
+                if (index !== -1) {
+                    state.userData[index] = action.payload
+                }
+            })
+            .addCase(updateMyProfile.rejected, (state, action) => {
+                state.profileSaving = false
                 state.error = action.payload
             })
     }
