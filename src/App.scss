@@ -287,8 +287,17 @@ input {
     }
 
     .forgot-link {
+        padding: 0;
+        border: 0;
+        background: none;
         color: $primary-blue;
-        cursor: default;
+        font-size: inherit;
+        font-family: inherit;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 
@@ -640,6 +649,21 @@ $navbar-height: 64px;
                 color: $heading_color;
                 word-break: break-all;
             }
+        }
+    }
+
+    .change-password-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        max-height: none;
+        padding: 10px 16px;
+        margin-top: 24px;
+
+        svg {
+            font-size: 15px;
         }
     }
 }

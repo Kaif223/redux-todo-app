@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import { FaFacebook } from 'react-icons/fa'
+import Modal from 'react-bootstrap/Modal'
 import { useFormik } from 'formik'
 import { signinUser } from '../Features/UserSlice'
 import { useDispatch } from 'react-redux'
@@ -11,6 +12,8 @@ import { toast } from 'react-toastify'
 const SignIn = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    // Static popup — only toggles visibility, no form wiring/API call.
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
 
     const handleSubmit = async (values) => {
         try {
@@ -76,7 +79,13 @@ const SignIn = () => {
                             <input type="checkbox" id="rememberMe" />
                             Remember me
                         </label>
-                        <span className="forgot-link">Forgot password?</span>
+                        <button
+                            type="button"
+                            className="forgot-link"
+                            onClick={() => setShowForgotPassword(true)}
+                        >
+                            Forgot password?
+                        </button>
                     </div>
 
                     <button type="submit" className="cutom-btn blue auth-submit-btn">
@@ -101,6 +110,45 @@ const SignIn = () => {
                     Don't have an account? <Link to="/signup">Sign Up</Link>
                 </p>
             </div>
+
+            {/* Forgot password popup — static, no submit handler wired up */}
+            <Modal
+                show={showForgotPassword}
+                onHide={() => setShowForgotPassword(false)}
+                centered
+                dialogClassName="custom-modal"
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Reset Password</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <p className="modal-helper-text">
+                        Enter the email address linked to your account and we'll send you a link to reset your password.
+                    </p>
+
+                    <label htmlFor="forgotEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="forgotEmail"
+                        placeholder="Enter your email"
+                        autoFocus
+                    />
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <button
+                        type="button"
+                        className="modal-btn"
+                        onClick={() => setShowForgotPassword(false)}
+                    >
+                        Cancel
+                    </button>
+                    <button type="button" className="modal-btn primary">
+                        Send Reset Link
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </section>
     )
 }
