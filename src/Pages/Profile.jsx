@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Modal from 'react-bootstrap/Modal'
 import { FiUser, FiMail, FiEdit2, FiCheck, FiLock } from 'react-icons/fi'
 import { ClipLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 import profileAvatar from '../Assets/images/profile-avatar.svg'
 import { uploadImage, updateMyProfile } from '../Features/UserSlice'
+import ChangePasswordModal from '../Components/ChangePasswordModal'
 
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
@@ -136,60 +136,10 @@ const Profile = () => {
                 </button>
             </div>
 
-            {/* Change password popup — static, no submit handler wired up */}
-            <Modal
+            <ChangePasswordModal
                 show={showPasswordModal}
                 onHide={() => setShowPasswordModal(false)}
-                centered
-                dialogClassName="custom-modal"
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Change Password</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body>
-                    <div className="mb-3">
-                        <label htmlFor="currentPassword">Current Password</label>
-                        <input
-                            type="password"
-                            id="currentPassword"
-                            placeholder="Enter current password"
-                            autoFocus
-                        />
-                    </div>
-
-                    <div className="mb-3">
-                        <label htmlFor="newPassword">New Password</label>
-                        <input
-                            type="password"
-                            id="newPassword"
-                            placeholder="Enter new password"
-                        />
-                    </div>
-
-                    <div className="mb-3">
-                        <label htmlFor="confirmNewPassword">Confirm New Password</label>
-                        <input
-                            type="password"
-                            id="confirmNewPassword"
-                            placeholder="Re-enter new password"
-                        />
-                    </div>
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <button
-                        type="button"
-                        className="modal-btn"
-                        onClick={() => setShowPasswordModal(false)}
-                    >
-                        Cancel
-                    </button>
-                    <button type="button" className="modal-btn primary">
-                        Update Password
-                    </button>
-                </Modal.Footer>
-            </Modal>
+            />
         </section>
     )
 }

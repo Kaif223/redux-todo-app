@@ -1,0 +1,7 @@
+import * as Yup from "yup";
+
+export const ChangePasswordSchema = Yup.object({
+    currentPassword: Yup.string().required("Current password is required"),
+    newPassword: Yup.string().min(6, "Password must be at least 6 characters").required("New password is required"),
+    confirmNewPassword: Yup.string().oneOf([Yup.ref("newPassword")], "Passwords must match").required("Confirm password is required"),
+});

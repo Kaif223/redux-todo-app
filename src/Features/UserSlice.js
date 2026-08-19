@@ -191,6 +191,68 @@ export const refreshToken = createAsyncThunk(
         }
     }
 );
+
+export const changePassword = createAsyncThunk(
+    "users/changePassword",
+    async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+        try {
+            const response = await axios.patch(
+                "http://localhost:8000/api/me/password",
+                {
+                    currentPassword,
+                    newPassword
+                },
+                {
+                    withCredentials: true
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+);
+
+export const forgotPassword = createAsyncThunk(
+    "users/forgotPassword",
+    async (userMail, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8000/api/forgot-password",
+                {
+                    userMail
+                }
+            );
+
+            return response.data;
+
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+);
+
+export const resetPassword = createAsyncThunk(
+    "users/resetPassword",
+    async ({ token, newPassword }, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(
+                "http://localhost:8000/api/reset-password",
+                {
+                    token,
+                    newPassword,
+                }
+            );
+
+            return response.data;
+
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+);
+
 const userSlice = createSlice({
     name: 'userDetail',
     initialState: {
@@ -206,7 +268,9 @@ const userSlice = createSlice({
         authChecked: false,
         profileSaving: false,
         imageUploading: false,
-
+        passwordChanging: false,
+        forgotPasswordLoading: false,
+        resetPasswordLoading: false,
     },
     reducers: {
         logout: (state) => {
@@ -346,6 +410,43 @@ const userSlice = createSlice({
             })
             .addCase(uploadImage.rejected, (state, action) => {
                 state.imageUploading = false;
+                state.error = action.payload;
+            })
+            .addCase(changePassword.pending, (state) => {
+                state.passwordChanging = true;
+                state.error = null;
+            })
+            .addCase(changePassword.fulfilled, (state) => {
+                state.passwordChanging = false;
+            })
+            .addCase(changePassword.rejected, (state, action) => {
+                state.passwordChanging = false;
+                state.error = action.payload;
+            })
+            .addCase(forgotPassword.pending, (state) => {
+                state.forgotPasswordLoading = true;
+                state.error = null;
+            })
+
+            .addCase(forgotPassword.fulfilled, (state) => {
+                state.forgotPasswordLoading = false;
+            })
+
+            .addCase(forgotPassword.rejected, (state, action) => {
+                state.forgotPasswordLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(resetPassword.pending, (state) => {
+                state.resetPasswordLoading = true;
+                state.error = null;
+            })
+
+            .addCase(resetPassword.fulfilled, (state) => {
+                state.resetPasswordLoading = false;
+            })
+
+            .addCase(resetPassword.rejected, (state, action) => {
+                state.resetPasswordLoading = false;
                 state.error = action.payload;
             })
     }

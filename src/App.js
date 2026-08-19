@@ -7,6 +7,7 @@ import TodoListItems from "./Pages/TodoListItems.jsx";
 import Profile from "./Pages/Profile.jsx";
 import SignUp from "./Pages/SignUp.jsx";
 import SignIn from "./Pages/SignIn.jsx";
+import ResetPassword from "./Pages/ResetPassword.jsx";
 import ProtectedRoute from "./Components/ProtectedRoute.jsx";
 import Layout from "./Components/Layout.jsx";
 import AdminLayout from "./Components/AdminLayout.jsx";
@@ -37,6 +38,7 @@ function App() {
         {/* Public auth routes (no navbar) */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* <Route element={<ProtectedRoute />}> */}
