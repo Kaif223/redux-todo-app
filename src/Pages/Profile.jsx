@@ -5,7 +5,7 @@ import { FiUser, FiMail, FiEdit2, FiCheck, FiLock } from 'react-icons/fi'
 import { ClipLoader } from 'react-spinners'
 import { toast } from 'react-toastify'
 import profileAvatar from '../Assets/images/profile-avatar.svg'
-import { updateMyProfile } from '../Features/UserSlice'
+import { uploadImage, updateMyProfile } from '../Features/UserSlice'
 
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 
@@ -15,7 +15,9 @@ const Profile = () => {
     const [imagePreview, setImagePreview] = useState(null);
     // Static popup — only toggles visibility, no form wiring/API call.
     const [showPasswordModal, setShowPasswordModal] = useState(false);
-    const { currentUser, profileSaving } = useSelector((state) => state.userDetail)
+    const { currentUser, profileSaving, imageUploading } = useSelector((state) => state.userDetail)
+
+    const isImageSaving = imageUploading || profileSaving;
 
     const handleImageSelect = (e) => {
         const file = e.target.files[0];
@@ -37,14 +39,30 @@ const Profile = () => {
     }
 
     const handleProfileUpdate = async () => {
+        if (!image) return;
         try {
-            await dispatch(updateMyProfile({ image })).unwrap();
+            const uploadResponse = await dispatch(
+                uploadImage(image)
+            ).unwrap();
+
+            await dispatch(updateMyProfile({
+                profileImage: {
+                    url: uploadResponse.imageUrl,
+                    publicId: uploadResponse.publicId
+                }
+            })).unwrap();
+
             URL.revokeObjectURL(imagePreview);
+
             setImage(null);
             setImagePreview(null);
+
             toast.success("Profile image updated.");
+
         } catch (error) {
+
             toast.error(error || "Could not update the profile image.");
+
         }
     }
     return (
@@ -54,12 +72,12 @@ const Profile = () => {
                     type="button"
                     className="profile-save-btn"
                     onClick={handleProfileUpdate}
-                    disabled={profileSaving}
+                    disabled={isImageSaving}
                 >
-                    {profileSaving
+                    {isImageSaving
                         ? <ClipLoader color="#fff" size={13} />
                         : <FiCheck />}
-                    <span>{profileSaving ? "Saving..." : "Save Image"}</span>
+                    <span>{isImageSaving ? "Saving..." : "Save Image"}</span>
                 </button>
             )}
 

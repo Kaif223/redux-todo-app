@@ -128,24 +128,39 @@ export const editUserName = createAsyncThunk(
     }
 )
 
+export const uploadImage = createAsyncThunk(
+    "users/uploadImage",
+    async (image, { rejectWithValue }) => {
+        try {
+            const formData = new FormData();
+            formData.append("image", image);
+
+            const response = await axios.post(
+                "http://localhost:8000/api/upload/image",
+                formData,
+                {
+                    withCredentials: true
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(getErrorMessage(error));
+        }
+    }
+);
 
 export const updateMyProfile = createAsyncThunk(
     "users/updateMyProfile",
-    async ({ userData = {}, image }, { rejectWithValue }) => {
+    async ({ userData = {}, profileImage }, { rejectWithValue }) => {
         try {
-            const formData = new FormData();
-
-            Object.entries(userData).forEach(([key, value]) => {
-                formData.append(key, value);
-            })
-
-            if (image) {
-                formData.append('image', image)
-            }
 
             const response = await axios.patch(
                 "http://localhost:8000/api/me",
-                formData,
+                {
+                    ...userData,
+                    profileImage
+                },
                 {
                     withCredentials: true
                 }
@@ -190,6 +205,7 @@ const userSlice = createSlice({
         isAuth: false,
         authChecked: false,
         profileSaving: false,
+        imageUploading: false,
 
     },
     reducers: {
@@ -297,7 +313,7 @@ const userSlice = createSlice({
                 if (index !== -1) {
                     state.userData[index] = action.payload
                 }
-                if(state.currentUser?._id === action.payload._id){
+                if (state.currentUser?._id === action.payload._id) {
                     state.currentUser = action.payload
                 }
             })
@@ -320,6 +336,17 @@ const userSlice = createSlice({
             .addCase(updateMyProfile.rejected, (state, action) => {
                 state.profileSaving = false
                 state.error = action.payload
+            })
+            .addCase(uploadImage.pending, (state) => {
+                state.imageUploading = true;
+                state.error = null;
+            })
+            .addCase(uploadImage.fulfilled, (state) => {
+                state.imageUploading = false;
+            })
+            .addCase(uploadImage.rejected, (state, action) => {
+                state.imageUploading = false;
+                state.error = action.payload;
             })
     }
 })
